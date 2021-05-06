@@ -9,6 +9,7 @@
 #include <cstring>
 #include <chrono>
 #include <thread>
+#include <omp.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -88,11 +89,11 @@ int main(void)
         /* main loop start time */
         time_start = chrono::high_resolution_clock::now();
         
-        Camera cam(r, alfa, beta);
-
         int p = 0;
+        #pragma omp parallel for default(none) shared(platno, r, alpha, beta, WIDTH, C_WIDTH, HEIGHT, C_HEIGHT) schedule(dynamic)
         for (int i = 0; i < HEIGHT / C_HEIGHT; i++)
         {
+            Camera cam(r, alfa, beta);
             for (int j = 0; j < WIDTH / C_WIDTH; j++)
             {
                 Vector origin(cam.x, cam.y, cam.z);
